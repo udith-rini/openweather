@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyPulse — Weather & Air Quality Dashboard</title>
+  <meta name="description" content="Real-time weather and air quality dashboard. Check temperature, humidity, wind speed, AQI and more for any city worldwide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated Background -->
+  <div class="bg-animation">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <span class="logo-icon">🌤</span>
+      <span class="logo-text">SkyPulse</span>
+    </div>
+    <div class="header-right">
+      <span id="current-datetime" class="datetime"></span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-wrapper">
+        <div class="search-box" id="search-box">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            id="city-input"
+            class="search-input"
+            placeholder="Search any city..."
+            autocomplete="off"
+          />
+          <button id="search-btn" class="search-btn">Search</button>
+        </div>
+        <button id="location-btn" class="location-btn" title="Use my location">
+          <span>📍</span> Use My Location
+        </button>
+      </div>
+      <div id="error-msg" class="error-msg hidden"></div>
+    </section>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Fetching weather data...</p>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div id="dashboard" class="dashboard hidden">
+
+      <!-- Current Weather Card -->
+      <section class="current-weather-card glass-card">
+        <div class="weather-main">
+          <div class="weather-left">
+            <p class="city-name" id="city-name">—</p>
+            <p class="country" id="country">—</p>
+            <div class="temp-display">
+              <span class="temperature" id="temperature">—</span>
+              <span class="temp-unit">°C</span>
+            </div>
+            <p class="weather-desc" id="weather-desc">—</p>
+            <p class="feels-like">Feels like <span id="feels-like">—</span>°C</p>
+          </div>
+          <div class="weather-right">
+            <div class="weather-icon-big" id="weather-icon-big">🌤</div>
+          </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-item">
+            <span class="stat-icon">💧</span>
+            <span class="stat-label">Humidity</span>
+            <span class="stat-value" id="humidity">—</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">💨</span>
+            <span class="stat-label">Wind</span>
+            <span class="stat-value" id="wind">—</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">👁</span>
+            <span class="stat-label">Visibility</span>
+            <span class="stat-value" id="visibility">—</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">🌡</span>
+            <span class="stat-label">Pressure</span>
+            <span class="stat-value" id="pressure">—</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">🌅</span>
+            <span class="stat-label">Sunrise</span>
+            <span class="stat-value" id="sunrise">—</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">🌇</span>
+            <span class="stat-label">Sunset</span>
+            <span class="stat-value" id="sunset">—</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Air Quality Card -->
+      <section class="aqi-card glass-card">
+        <h2 class="card-title">🫧 Air Quality Index</h2>
+        <div class="aqi-main">
+          <div class="aqi-circle-wrap">
+            <div class="aqi-circle" id="aqi-circle">
+              <span class="aqi-value" id="aqi-value">—</span>
+              <span class="aqi-label-small">AQI</span>
+            </div>
+          </div>
+          <div class="aqi-info">
+            <p class="aqi-status" id="aqi-status">—</p>
+            <p class="aqi-desc" id="aqi-desc">—</p>
+            <div class="aqi-bar-wrap">
+              <div class="aqi-bar">
+                <div class="aqi-bar-fill" id="aqi-bar-fill"></div>
+              </div>
+              <div class="aqi-bar-labels">
+                <span>Good</span>
+                <span>Moderate</span>
+                <span>Poor</span>
+                <span>Hazardous</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pollutants -->
+        <div class="pollutants-grid">
+          <div class="pollutant-item">
+            <span class="poll-name">PM2.5</span>
+            <span class="poll-value" id="pm25">—</span>
+            <span class="poll-unit">µg/m³</span>
+          </div>
+          <div class="pollutant-item">
+            <span class="poll-name">PM10</span>
+            <span class="poll-value" id="pm10">—</span>
+            <span class="poll-unit">µg/m³</span>
+          </div>
+          <div class="pollutant-item">
+            <span class="poll-name">CO</span>
+            <span class="poll-value" id="co">—</span>
+            <span class="poll-unit">µg/m³</span>
+          </div>
+          <div class="pollutant-item">
+            <span class="poll-name">NO₂</span>
+            <span class="poll-value" id="no2">—</span>
+            <span class="poll-unit">µg/m³</span>
+          </div>
+          <div class="pollutant-item">
+            <span class="poll-name">O₃</span>
+            <span class="poll-value" id="o3">—</span>
+            <span class="poll-unit">µg/m³</span>
+          </div>
+          <div class="pollutant-item">
+            <span class="poll-name">SO₂</span>
+            <span class="poll-value" id="so2">—</span>
+            <span class="poll-unit">µg/m³</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 Day Forecast -->
+      <section class="forecast-card glass-card">
+        <h2 class="card-title">📅 5-Day Forecast</h2>
+        <div class="forecast-grid" id="forecast-grid">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- Hourly Forecast -->
+      <section class="hourly-card glass-card">
+        <h2 class="card-title">🕐 Hourly Forecast (24h)</h2>
+        <div class="hourly-scroll" id="hourly-scroll">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+    </div><!-- end #dashboard -->
+
+    <!-- Landing placeholder -->
+    <div id="landing" class="landing">
+      <div class="landing-icon">🌍</div>
+      <h1 class="landing-title">Weather & Air Quality Dashboard</h1>
+      <p class="landing-subtitle">Search any city or use your current location to get real-time weather conditions and air quality data.</p>
+      <div class="landing-features">
+        <div class="feature-pill">🌡 Temperature</div>
+        <div class="feature-pill">💨 Wind Speed</div>
+        <div class="feature-pill">🫧 AQI</div>
+        <div class="feature-pill">📅 5-Day Forecast</div>
+        <div class="feature-pill">🕐 Hourly Data</div>
+        <div class="feature-pill">🌅 Sunrise/Sunset</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- API Key Modal -->
+  <div id="api-modal" class="modal-overlay">
+    <div class="modal glass-card">
+      <div class="modal-icon">🔑</div>
+      <h2 class="modal-title">Enter Your API Key</h2>
+      <p class="modal-desc">
+        This dashboard uses the <strong>OpenWeatherMap API</strong> (free). 
+        <a href="https://openweathermap.org/api" target="_blank" rel="noopener">Get your free key here</a> — it takes 2 minutes!
+      </p>
+      <div class="modal-steps">
+        <div class="step">1. Go to <a href="https://openweathermap.org" target="_blank">openweathermap.org</a></div>
+        <div class="step">2. Sign up for a free account</div>
+        <div class="step">3. Go to "API Keys" in your profile</div>
+        <div class="step">4. Copy your key and paste below</div>
+      </div>
+      <input type="text" id="api-key-input" class="api-input" placeholder="Paste your API key here..." />
+      <button id="save-api-key" class="save-btn">Save & Continue 🚀</button>
+      <p class="modal-note">⚠️ New API keys take ~2 hours to activate after signup.</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

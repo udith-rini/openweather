@@ -1,0 +1,14 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore node modules (if any added later)
+node_modules/
+
+# Ignore environment files (never push API keys!)
+.env
+.env.local
